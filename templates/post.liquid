@@ -1,0 +1,58 @@
+{%- assign opt = post.post_options -%}
+{%- assign gallery_url = theme.tokens.gallery_url | default: "/gallery" | strip -%}
+{%- assign g0 = gallery_url | slice: 0 -%}
+{%- if g0 != "/" %}{% assign gallery_url = "/gallery" %}{% endif -%}
+{%- comment -%} Post renders get no `posts`, but do get `posts_by_tag`: page through the first tag. {%- endcomment -%}
+{%- assign nav_tag = post.tags | first -%}
+{%- if nav_tag %}{% assign siblings = posts_by_tag[nav_tag.slug] %}{% endif -%}
+{%- assign found = false -%}
+{%- for p in siblings -%}
+  {%- if found %}{% assign older = p %}{% break %}{% endif -%}
+  {%- if p.slug == post.slug %}{% assign found = true %}{% else %}{% assign newer = p %}{% endif -%}
+{%- endfor -%}
+{%- unless found %}{% assign newer = nil %}{% endunless -%}
+<article class="photo-post">
+  {% if opt.photo != "" %}
+    <figure class="enlarged">
+      <a href="{{ opt.photo }}" target="_blank" rel="noopener" title="Open the original">
+        <img src="{{ opt.photo }}" alt="{{ opt.alt | default: post.title | escape }}" />
+      </a>
+    </figure>
+  {% endif %}
+
+  <div class="post-text">
+    <header class="post-head">
+      <h1>{{ post.title | escape }}</h1>
+      <p class="meta">
+        {% if post.published_at %}<time datetime="{{ post.published_at | iso8601 }}">{{ post.published_at | strftime: "%B %-d, %Y" }}</time>{% endif %}
+        {% if opt.location != "" %}<span>{{ opt.location | escape }}</span>{% endif %}
+      </p>
+      {% if opt.camera != "" %}<p class="camera">{{ opt.camera | escape }}</p>{% endif %}
+      {% if post.tags != empty %}
+        <ul class="post-tags">
+          {% for t in post.tags %}<li><a class="chip" href="{{ gallery_url | escape }}?tag={{ t.slug | escape }}">{{ t.name | escape }}</a></li>{% endfor %}
+        </ul>
+      {% endif %}
+    </header>
+
+    {% if body_html != "" %}<div class="prose">{{ body_html }}</div>{% endif %}
+  </div>
+
+  {% if newer or older %}
+    <nav class="pager" aria-label="More in {{ nav_tag.name | escape }}">
+      {% if newer %}
+        <a class="pager-link prev" href="{{ newer.url }}">
+          {% if newer.post_options.photo != "" %}<img src="{{ newer.post_options.photo }}" alt="" loading="lazy" />{% endif %}
+          <span><small>&larr; Previous in {{ nav_tag.name | escape }}</small>{{ newer.title | escape }}</span>
+        </a>
+      {% endif %}
+      {% if older %}
+        <a class="pager-link next" href="{{ older.url }}">
+          <span><small>Next in {{ nav_tag.name | escape }} &rarr;</small>{{ older.title | escape }}</span>
+          {% if older.post_options.photo != "" %}<img src="{{ older.post_options.photo }}" alt="" loading="lazy" />{% endif %}
+        </a>
+      {% endif %}
+    </nav>
+  {% endif %}
+  <p class="back"><a href="{{ gallery_url | escape }}">&larr; Back to the gallery</a></p>
+</article>

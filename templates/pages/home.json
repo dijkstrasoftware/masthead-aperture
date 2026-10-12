@@ -1,0 +1,55 @@
+{
+  "label": "Home",
+  "description": "A homepage in one of two looks. Photos come from posts tagged with the featured tag.",
+  "page_options": [
+    {
+      "key": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": ["full-frame", "contact-sheet"],
+      "default": "full-frame",
+      "description": "Full frame: one photo fills the screen. Contact sheet: big type, a drifting film strip and numbered frames."
+    },
+    {
+      "key": "tagline",
+      "label": "Tagline",
+      "type": "string",
+      "default": "",
+      "description": "Under your name. Empty uses the site description."
+    },
+    {
+      "key": "intro",
+      "label": "Intro",
+      "type": "text",
+      "default": "",
+      "description": "A short paragraph. Contact sheet only."
+    },
+    {
+      "key": "hero_image",
+      "label": "Hero image",
+      "type": "file",
+      "default": "",
+      "description": "Full frame only. Empty uses the newest featured photo."
+    },
+    {
+      "key": "hero_tag",
+      "label": "Featured tag",
+      "type": "string",
+      "default": "Featured",
+      "description": "Photos tagged with this show up on the homepage. Empty uses your latest photos."
+    },
+    {
+      "key": "count",
+      "label": "Number of photos",
+      "type": "number",
+      "default": 8
+    },
+    {
+      "key": "cta_label",
+      "label": "Button label",
+      "type": "string",
+      "default": "View all work",
+      "description": "Links to the Gallery URL setting."
+    }
+  ]
+}

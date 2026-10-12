@@ -1,0 +1,134 @@
+{
+  "name": "Aperture",
+  "slug": "aperture",
+  "version": "1.0.0",
+  "render_version": "v1",
+  "author": "Masthead",
+  "description": "A large, image-first theme for photographers. One post is one photograph; tags filter one big mosaic.",
+  "tokens": [
+    {
+      "key": "nav_position",
+      "label": "Navigation",
+      "type": "select",
+      "options": ["top", "sidebar"],
+      "default": "top",
+      "category": "Layout",
+      "description": "A slim top bar, or a fixed column on the left. Both become a top bar on phones."
+    },
+    {
+      "key": "sidebar_text",
+      "label": "Sidebar text",
+      "type": "text",
+      "default": "",
+      "category": "Layout",
+      "description": "A short note at the bottom of the sidebar. Only shown with the sidebar navigation."
+    },
+    {
+      "key": "gallery_url",
+      "label": "Gallery URL",
+      "type": "string",
+      "default": "/gallery",
+      "category": "Layout",
+      "description": "Where your Gallery page lives. Used by 'View all', tag links and 'Back to gallery'."
+    },
+    {
+      "key": "gap",
+      "label": "Gap between photos",
+      "type": "length",
+      "default": "6px",
+      "category": "Gallery"
+    },
+    {
+      "key": "columns",
+      "label": "Columns on desktop",
+      "type": "number",
+      "default": 4,
+      "category": "Gallery",
+      "description": "2 to 6. Fewer columns on tablets and phones."
+    },
+    {
+      "key": "show_titles",
+      "label": "Show titles on hover",
+      "type": "boolean",
+      "default": true,
+      "category": "Gallery"
+    },
+    {
+      "key": "color_scheme",
+      "label": "Colour scheme",
+      "type": "select",
+      "options": ["system", "light", "dark"],
+      "default": "system",
+      "category": "Appearance",
+      "description": "'system' follows the visitor's light/dark setting. 'light' or 'dark' locks it."
+    },
+    {
+      "key": "accent",
+      "label": "Accent color",
+      "type": "color",
+      "default": "#e8b04a",
+      "category": "Appearance"
+    },
+    {
+      "key": "favicon",
+      "label": "Favicon",
+      "type": "file",
+      "default": "",
+      "category": "Appearance"
+    }
+  ],
+  "post_options": [
+    {
+      "key": "photo",
+      "label": "Photo",
+      "type": "file",
+      "default": "",
+      "description": "The photograph. Posts without a photo don't appear in the gallery."
+    },
+    {
+      "key": "alt",
+      "label": "Alt text",
+      "type": "string",
+      "default": "",
+      "description": "Describes the photo for screen readers. Falls back to the title."
+    },
+    {
+      "key": "tile_size",
+      "label": "Tile size",
+      "type": "select",
+      "options": ["auto", "small", "wide", "tall", "large", "panorama"],
+      "default": "auto",
+      "description": "Preferred size in the gallery. 'auto' picks one from a rhythm so the mosaic stays varied."
+    },
+    {
+      "key": "focus",
+      "label": "Crop focus",
+      "type": "select",
+      "options": ["center", "top", "bottom", "left", "right"],
+      "default": "center",
+      "description": "Which part of the photo stays visible when a tile crops it."
+    },
+    {
+      "key": "camera",
+      "label": "Camera",
+      "type": "string",
+      "default": "",
+      "description": "Free text, e.g. 'Leica M6 · 35mm · f/8 · 1/250 · Portra 400'."
+    },
+    {
+      "key": "location",
+      "label": "Location",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "page_options": [
+    {
+      "key": "show_nav",
+      "label": "Show navigation",
+      "type": "boolean",
+      "default": true,
+      "description": "Untick to hide the navigation on this page only."
+    }
+  ]
+}

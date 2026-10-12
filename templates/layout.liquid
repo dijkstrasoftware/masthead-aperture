@@ -1,0 +1,44 @@
+{%- assign nav_position = theme.tokens.nav_position | default: "top" -%}
+{%- assign hero = false -%}
+{%- if page.template == "home" and page.page_options.variant != "contact-sheet" -%}{%- assign hero = true -%}{%- endif -%}
+<!DOCTYPE html>
+<html lang="en" data-scheme="{{ theme.tokens.color_scheme | default: 'system' }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% if post %}{{ post.title | escape }} · {% elsif page and page.slug != site.homepage_slug %}{{ page.title | escape }} · {% endif %}{{ site.title | default: site.name | escape }}</title>
+    {% if post and post.excerpt != "" %}<meta name="description" content="{{ post.excerpt | escape }}" />{% elsif site.description != "" %}<meta name="description" content="{{ site.description | escape }}" />{% endif %}
+    {% if post and post.post_options.photo != "" %}<meta property="og:image" content="{{ post.post_options.photo }}" />{% endif %}
+    {% if theme.tokens.favicon != "" %}<link rel="icon" href="{{ theme.tokens.favicon }}" />{% endif %}
+    <style>
+      {{ theme.css }}
+      {{ site.css_overrides }}
+    </style>
+  </head>
+  <body class="nav-{{ nav_position }}{% if hero %} has-hero{% endif %}">
+    <a class="skip" href="#main">Skip to content</a>
+    {% unless page.page_options.show_nav == false %}
+      <header class="site-nav">
+        <a class="brand" href="/">{{ site.name | escape }}</a>
+        {% if pages != empty %}
+          <ul class="nav-links">
+            {% for p in pages %}<li><a href="{{ p.url }}"{% if page and p.url == page.url %} aria-current="page"{% endif %}>{{ p.title | escape }}</a></li>{% endfor %}
+          </ul>
+          <details class="nav-menu">
+            <summary>Menu</summary>
+            <ul>
+              {% for p in pages %}<li><a href="{{ p.url }}"{% if page and p.url == page.url %} aria-current="page"{% endif %}>{{ p.title | escape }}</a></li>{% endfor %}
+            </ul>
+          </details>
+        {% endif %}
+        {% if nav_position == "sidebar" and theme.tokens.sidebar_text != "" %}<p class="sidebar-text">{{ theme.tokens.sidebar_text | escape | newline_to_br }}</p>{% endif %}
+      </header>
+    {% endunless %}
+    <main id="main">
+      {{ content }}
+    </main>
+    <footer class="site-footer">
+      <p>&copy; {{ "now" | date: "%Y" }} {{ site.name | escape }} · Published with <a href="https://masthead.site" rel="noopener">Masthead</a></p>
+    </footer>
+  </body>
+</html>

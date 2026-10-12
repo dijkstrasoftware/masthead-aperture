@@ -1,0 +1,19 @@
+{
+  "label": "Gallery",
+  "description": "Every photo post in one mosaic, filtered by tag.",
+  "page_options": [
+    {
+      "key": "intro",
+      "label": "Intro",
+      "type": "text",
+      "default": "",
+      "description": "A short paragraph under the title. Empty means none."
+    },
+    {
+      "key": "show_filter",
+      "label": "Show tag filter",
+      "type": "boolean",
+      "default": true
+    }
+  ]
+}

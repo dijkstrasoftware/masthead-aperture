@@ -1,0 +1,49 @@
+{%- assign o = page.page_options -%}
+{%- assign rhythm = "large,small,small,tall,small,wide,small,small,tall,small" | split: "," -%}
+{%- assign c = theme.tokens.columns | default: 4 | at_least: 2 | at_most: 6 -%}
+{%- assign c_md = c | at_most: 3 -%}
+<header class="page-head">
+  <h1 class="display">{{ page.title | escape }}</h1>
+  {% if o.intro != "" %}<p class="lede">{{ o.intro | escape | newline_to_br }}</p>{% endif %}
+</header>
+
+{% if o.show_filter and tags != empty %}
+  <nav class="chips" aria-label="Filter photos by tag">
+    <a class="chip is-active" href="{{ page.url }}" data-tag="" aria-current="page">All</a>
+    {% for tag in tags %}<a class="chip" href="?tag={{ tag.slug | escape }}" data-tag="{{ tag.slug | escape }}">{{ tag.name | escape }}</a>{% endfor %}
+  </nav>
+{% endif %}
+
+<div class="mosaic" style="--c: {{ c }}; --c-md: {{ c_md }}" data-gallery>
+  {%- assign n = 0 -%}
+  {%- for post in posts -%}
+    {%- assign opt = post.post_options -%}
+    {%- if opt.photo == "" or opt.photo == nil %}{% continue %}{% endif -%}
+    {%- assign shape = opt.tile_size | default: "auto" -%}
+    {%- if shape == "auto" %}{% assign r = n | modulo: rhythm.size %}{% assign shape = rhythm[r] %}{% endif %}
+    <a class="tile size-{{ shape }} focus-{{ opt.focus | default: 'center' }}" href="{{ post.url }}" data-tags="|{% for t in post.tags %}{{ t.slug | escape }}|{% endfor %}">
+      <img src="{{ opt.photo }}" alt="{{ opt.alt | default: post.title | escape }}"{% if n > 3 %} loading="lazy"{% endif %} />
+      {% if theme.tokens.show_titles %}<span class="tile-title">{{ post.title | escape }}</span>{% endif %}
+    </a>
+    {%- assign n = n | plus: 1 -%}
+  {%- endfor -%}
+</div>
+<p class="empty" data-empty{% if n > 0 %} hidden{% endif %}>No photographs here yet.</p>
+
+<script>
+  (function () {
+    var tag = new URLSearchParams(location.search).get("tag");
+    if (!tag) return;
+    var shown = 0;
+    document.querySelectorAll("[data-gallery] .tile").forEach(function (el) {
+      el.hidden = el.dataset.tags.indexOf("|" + tag + "|") < 0;
+      if (!el.hidden) shown++;
+    });
+    document.querySelectorAll(".chip").forEach(function (el) {
+      var on = el.dataset.tag === tag;
+      el.classList.toggle("is-active", on);
+      on ? el.setAttribute("aria-current", "page") : el.removeAttribute("aria-current");
+    });
+    document.querySelector("[data-empty]").hidden = shown > 0;
+  })();
+</script>

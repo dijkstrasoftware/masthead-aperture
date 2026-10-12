@@ -1,0 +1,102 @@
+{%- assign o = page.page_options -%}
+{%- assign name = site.title | default: site.name -%}
+{%- assign tagline = o.tagline | default: site.description -%}
+{%- assign count = o.count | default: 8 | at_least: 1 -%}
+{%- assign gallery_url = theme.tokens.gallery_url | default: "/gallery" | strip -%}
+{%- assign g0 = gallery_url | slice: 0 -%}
+{%- if g0 != "/" %}{% assign gallery_url = "/gallery" %}{% endif -%}
+{%- comment -%} Same slugging as Masthead: "Black & White" -> "black-white". {%- endcomment -%}
+{%- assign tag = o.hero_tag | default: "" | strip | downcase | replace: " & ", " " | replace: "/", " " | replace: " ", "-" -%}
+{%- assign pool = posts -%}
+{%- if tag != "" -%}
+  {%- assign tagged = posts | where_tag: tag -%}
+  {%- if tagged.size > 0 %}{% assign pool = tagged %}{% endif -%}
+{%- endif -%}
+
+{%- if o.variant == "contact-sheet" -%}
+
+<section class="sheet-intro">
+  <div class="sheet-text">
+    <h1 class="display display-xl">{{ name | escape }}</h1>
+    {% if tagline != "" %}<p class="tagline">{{ tagline | escape }}</p>{% endif %}
+    {% if o.intro != "" %}<p class="lede">{{ o.intro | escape | newline_to_br }}</p>{% endif %}
+    <p><a class="button" href="{{ gallery_url | escape }}">{{ o.cta_label | default: "View all work" | escape }} &rarr;</a></p>
+  </div>
+  <div class="strip" aria-hidden="true">
+    <div class="strip-track">
+      {%- for pass in (1..2) -%}
+        {%- assign n = 0 -%}
+        {%- for p in pool -%}
+          {%- if p.post_options.photo == "" %}{% continue %}{% endif -%}
+          {%- if n >= count %}{% break %}{% endif -%}
+          <img src="{{ p.post_options.photo }}" alt="" />
+          {%- assign n = n | plus: 1 -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<section class="sheet" aria-label="Latest photographs">
+  <ol class="sheet-grid">
+    {%- assign n = 0 -%}
+    {%- for p in posts -%}
+      {%- if p.post_options.photo == "" %}{% continue %}{% endif -%}
+      {%- if n >= count %}{% break %}{% endif -%}
+      {%- assign n = n | plus: 1 %}
+      <li>
+        <a href="{{ p.url }}">
+          <img src="{{ p.post_options.photo }}" alt="{{ p.post_options.alt | default: p.title | escape }}" loading="lazy" class="focus-{{ p.post_options.focus | default: 'center' }}" />
+          <span class="frame-label"><span class="frame-no">{% if n < 10 %}0{% endif %}{{ n }}</span> {{ p.title | escape }}</span>
+        </a>
+      </li>
+    {%- endfor %}
+  </ol>
+</section>
+
+{%- else -%}
+
+{%- assign hero_src = o.hero_image -%}
+{%- if hero_src == "" or hero_src == nil -%}
+  {%- for p in pool -%}{%- if p.post_options.photo != "" %}{% assign hero_post = p %}{% break %}{% endif -%}{%- endfor -%}
+  {%- unless hero_post -%}{%- for p in posts -%}{%- if p.post_options.photo != "" %}{% assign hero_post = p %}{% break %}{% endif -%}{%- endfor -%}{%- endunless -%}
+  {%- if hero_post %}{% assign hero_src = hero_post.post_options.photo %}{% endif -%}
+{%- endif -%}
+
+<section class="hero">
+  {% if hero_src != "" and hero_src != nil %}<img class="hero-img{% if hero_post %} focus-{{ hero_post.post_options.focus | default: 'center' }}{% endif %}" src="{{ hero_src }}" alt="{% if hero_post %}{{ hero_post.post_options.alt | default: hero_post.title | escape }}{% endif %}" />{% endif %}
+  <div class="hero-text">
+    <h1 class="display display-xl">{{ name | escape }}</h1>
+    {% if tagline != "" %}<p class="tagline">{{ tagline | escape }}</p>{% endif %}
+  </div>
+  {% if hero_post %}<a class="hero-credit" href="{{ hero_post.url }}">{{ hero_post.title | escape }} &rarr;</a>{% endif %}
+  <a class="hero-cue" href="#work" aria-label="Scroll to selected work">&darr;</a>
+</section>
+
+{%- assign rhythm = "large,small,small,tall,small,wide,small,small,tall,small" | split: "," -%}
+{%- assign c = theme.tokens.columns | default: 4 | at_least: 2 | at_most: 6 -%}
+{%- assign c_md = c | at_most: 3 %}
+<section class="selected" id="work">
+  <header class="section-head">
+    <h2>Selected work</h2>
+    <a class="button" href="{{ gallery_url | escape }}">{{ o.cta_label | default: "View all work" | escape }} &rarr;</a>
+  </header>
+  <div class="mosaic" style="--c: {{ c }}; --c-md: {{ c_md }}">
+    {%- assign n = 0 -%}
+    {%- for post in pool -%}
+      {%- assign opt = post.post_options -%}
+      {%- if opt.photo == "" or opt.photo == nil %}{% continue %}{% endif -%}
+      {%- if hero_post and post.slug == hero_post.slug %}{% continue %}{% endif -%}
+      {%- if n >= count %}{% break %}{% endif -%}
+      {%- assign shape = opt.tile_size | default: "auto" -%}
+      {%- if shape == "auto" %}{% assign r = n | modulo: rhythm.size %}{% assign shape = rhythm[r] %}{% endif %}
+      <a class="tile size-{{ shape }} focus-{{ opt.focus | default: 'center' }}" href="{{ post.url }}">
+        <img src="{{ opt.photo }}" alt="{{ opt.alt | default: post.title | escape }}" loading="lazy" />
+        {% if theme.tokens.show_titles %}<span class="tile-title">{{ post.title | escape }}</span>{% endif %}
+      </a>
+      {%- assign n = n | plus: 1 -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{%- endif -%}
